@@ -7,7 +7,7 @@
   "scripts": {
     "test": "vitest",
     "build": "tsc",
-    "start": "GITHUB_TOKEN=${BILLING_API_TOKEN} node --loader ts-node/esm src/index.ts"
+    "start": "node --loader ts-node/esm src/index.ts"
   },
   "author": "David Losert <david.losert@gmx.de>",
   "license": "MIT",

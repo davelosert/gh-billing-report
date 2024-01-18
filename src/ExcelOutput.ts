@@ -6,30 +6,31 @@ const generateExcel = async (outputFile: string, usageItems: UsageItem[]) => {
 	const orgWorksheet = workbook.addWorksheet('Usage by Organization');
 	
 	const orgUsage = sumUsageByOrganization(usageItems);
-	// write the org usage to the excel file, with one row per org and a column for net and gross amount
-	orgWorksheet.addTable({
-		name: 'Usage by Organization',
-		ref: 'A1',
-		headerRow: true,
-		totalsRow: true,
-		style: {
-			theme: 'TableStyleMedium2',
-			showRowStripes: true,
-		},
-		columns :[
-			{ name: 'Organization', totalsRowLabel: 'Total', filterButton: false },
-			{ name: 'Net Amount (with discounts applied)', totalsRowFunction: 'sum', filterButton: false},
-			{ name: 'Gross Amount (without discounts)', totalsRowFunction: 'sum', filterButton: false},
-		],
-		rows: Object.entries(orgUsage).map(([organizationName, { netAmount, grossAmount }]) => ([
-			organizationName,
-			netAmount,
-			grossAmount,
-		]))
-	})
 	
-	orgWorksheet.getColumn(2).numFmt
+	orgWorksheet.columns = [	
+			{ header: 'Organization', key: 'organizationName' },
+			{ header: 'Net Amount (with discounts applied)', key: 'netAmount' },
+			{ header: 'Gross Amount (without discounts)', key: 'grossAmount' },
+	]
 	
+	orgWorksheet.getRow(1).font = { bold: true, underline: true };
+
+	orgWorksheet.getColumn('netAmount').numFmt = '$#,##0.00;[Red]-$#,##0.00';
+	orgWorksheet.getColumn('grossAmount').numFmt = '$#,##0.00;[Red]-$#,##0.00';
+
+	orgWorksheet.addRows(
+			Object.entries(orgUsage.orgUsage).map(([organizationName, { netAmount, grossAmount }]) => ({
+				organizationName,
+				netAmount,
+				grossAmount,
+			}))
+	)
+	
+	const sumRow = orgWorksheet.addRow(['Total', orgUsage.sumUsage.netAmount, orgUsage.sumUsage.grossAmount]);
+	sumRow.font = { bold: true };
+
+	console.log(`Overall Usage: ${orgUsage.sumUsage.netAmount} (net) ${orgUsage.sumUsage.grossAmount} (gross)`);
+
 	const detailUsage = workbook.addWorksheet('Detail Usage');
 	// write all the entries of the usageItems array to the excel file
 	detailUsage.columns = [
