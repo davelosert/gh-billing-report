@@ -1,0 +1,24 @@
+{
+  "name": "gh-billing-vnext-export",
+  "version": "1.0.0",
+  "description": "A command line tool to use the Billing &amp; Billing VNext APIs to get an overview of costs in an Enterprise",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc",
+    "start": "GITHUB_TOKEN=${BILLING_API_TOKEN} node --loader ts-node/esm src/index.ts"
+  },
+  "author": "David Losert <david.losert@gmx.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@commander-js/extra-typings": "11.1.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.3.3"
+  },
+  "dependencies": {
+    "commander": "11.1.0",
+    "exceljs": "4.4.0",
+    "octokit": "3.1.2"
+  }
+}
