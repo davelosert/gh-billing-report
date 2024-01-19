@@ -14,10 +14,13 @@
   "devDependencies": {
     "@commander-js/extra-typings": "11.1.0",
     "ts-node": "10.9.2",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "vitest": "1.2.1"
   },
   "dependencies": {
+    "@date-fns/utc": "1.1.1",
     "commander": "11.1.0",
+    "date-fns": "3.2.0",
     "exceljs": "4.4.0",
     "octokit": "3.1.2"
   }

@@ -1,4 +1,7 @@
 import { APIDate } from './EnterpriseBillingAPI';
+import { UsageItem } from './UsageItem';
+import { UTCDate } from "@date-fns/utc";
+import { parseISO, isExists, Interval, isSameMonth, endOfDay, startOfMonth, endOfMonth, addMonths, subDays } from 'date-fns'
 
 type InputCycle = {
 	year: number;
@@ -6,41 +9,76 @@ type InputCycle = {
 	billingCycle: number;
 }
 
-type DateRange = {
+type ApiDateRange = {
 	start: APIDate;
 	end?: APIDate;
 }
 
 function parseInputCycle({ year, month, billingCycle }: InputCycle) {
 	const dateRange = getRequiredDateRange({ year, month, billingCycle });
+
 	return {
 		getRequiredAPIDateRange() {
+			if(isSameMonth(dateRange.start, dateRange.end)) {
+				return [convertDateToApiDate(dateRange.start as Date)];
+			}
 			// Return it as Array, so we can easily iterate over it in the API
-			return Object.values(dateRange);
+			return [
+				convertDateToApiDate(dateRange.start as Date),
+				convertDateToApiDate(dateRange.end as Date)
+			];
 		},
+		getDateRange() {
+			return dateRange;
+		},
+		isInDateRange(usageItem: UsageItem) {
+			const usageItemDate = parseISO(usageItem.date);
+
+			if(billingCycle === 1) {
+				return usageItemDate.getFullYear() === year && usageItemDate.getMonth() === month - 1;
+			}
+		}
 	}
 }
 
-function getRequiredDateRange({ year, month, billingCycle }: InputCycle): DateRange {
+function convertDateToApiDate(date: Date): APIDate {
+	return {
+		year: date.getFullYear(),
+		month: date.getMonth() + 1
+	}
+}
+
+
+function getRequiredDateRange({ year, month, billingCycle }: InputCycle): Interval {
+			const normalizedMonth = month - 1;
+
 			if(billingCycle === 1) {
 				return {
-					start: { year, month }
-				}
-			} 
-			
-			
-			// If first of the year, we need to get december from the previous year
-			if(month === 1) {
-				return { 
-					start: { year: year - 1, month: 12 },
-					end: { year, month }
+					start: startOfMonth(new UTCDate(year, normalizedMonth)),
+					end: endOfMonth(new UTCDate(year, normalizedMonth))
 				}
 			}
 			
-			// In all other cases, we require the given and the next month
+			// If the current month does not contain the billing cycle date, we need to use the next month
+			if(!isExists(year, normalizedMonth, billingCycle)) {
+				const start = startOfMonth(new UTCDate(year, normalizedMonth + 1));
+				const end = endOfDay(new UTCDate(year, normalizedMonth + 1, billingCycle - 1));
+				return {
+					start,
+					end
+				}
+			}
+			
+			// Billing cycle is until the end of the billing cycle day - 1 of the next month
+			// For example: A billing Cycle of 15 for the month of May is from 2022-05-15T00:00:00Z until 2022-06-14T23:59:59Z
+			const start = new UTCDate(year, normalizedMonth, billingCycle);
+			let end = addMonths(start, 1);
+			end = subDays(end, 1);
+			end = endOfDay(end);
+
 			return {
-				start: { year, month },
-				end: { year, month: month + 1 }
+				start,
+				end
 			}
 }
 
@@ -51,5 +89,5 @@ export {
 export type {
 	InputCycle,
 	APIDate,
-	DateRange
+	ApiDateRange
 }
