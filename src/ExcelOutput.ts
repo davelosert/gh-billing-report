@@ -1,16 +1,17 @@
 import ExcelJS from 'exceljs';
-import { UsageItem, sumUsageByOrganization } from './UsageItem.js';
+import { UsageItem } from './UsageItem.js';
+import { createOrganizationReport } from './OrganizationReport.js';
 
 const generateExcel = async (outputFile: string, usageItems: UsageItem[]) => {
 	const workbook = new ExcelJS.Workbook();
 	const orgWorksheet = workbook.addWorksheet('Usage by Organization');
 	
-	const orgUsage = sumUsageByOrganization(usageItems);
+	const organizationReport = createOrganizationReport(usageItems);
 	
 	orgWorksheet.columns = [	
-			{ header: 'Organization', key: 'organizationName' },
-			{ header: 'Net Amount (with discounts applied)', key: 'netAmount' },
-			{ header: 'Gross Amount (without discounts)', key: 'grossAmount' },
+			{ header: 'Organization', key: 'organizatio', width: 30 },
+			{ header: 'Net Amount (with discounts applied)', key: 'netAmount', width: 30 },
+			{ header: 'Gross Amount (without discounts)', key: 'grossAmount', width: 30 },
 	]
 	
 	orgWorksheet.getRow(1).font = { bold: true, underline: true };
@@ -18,18 +19,12 @@ const generateExcel = async (outputFile: string, usageItems: UsageItem[]) => {
 	orgWorksheet.getColumn('netAmount').numFmt = '$#,##0.00;[Red]-$#,##0.00';
 	orgWorksheet.getColumn('grossAmount').numFmt = '$#,##0.00;[Red]-$#,##0.00';
 
-	orgWorksheet.addRows(
-			Object.entries(orgUsage.orgUsage).map(([organizationName, { netAmount, grossAmount }]) => ({
-				organizationName,
-				netAmount,
-				grossAmount,
-			}))
-	)
+	orgWorksheet.addRows(organizationReport.usageByOrg)
 	
-	const sumRow = orgWorksheet.addRow(['Total', orgUsage.sumUsage.netAmount, orgUsage.sumUsage.grossAmount]);
+	const sumRow = orgWorksheet.addRow(['Total', organizationReport.sumUsage.netAmount, organizationReport.sumUsage.grossAmount]);
 	sumRow.font = { bold: true };
 
-	console.log(`Overall Usage: ${orgUsage.sumUsage.netAmount} (net) ${orgUsage.sumUsage.grossAmount} (gross)`);
+	console.log(`Overall Usage: ${organizationReport.sumUsage.netAmount} (net) ${organizationReport.sumUsage.grossAmount} (gross)`);
 
 	const detailUsage = workbook.addWorksheet('Detail Usage');
 	// write all the entries of the usageItems array to the excel file
