@@ -24,17 +24,24 @@ const program = new Command()
 program.parse();
 const options = program.opts();
 
+
 if(!options.githubToken) {
 	throw new Error('Github token is required');
+	
+	
 }
 
-const billingCycle = parseInputCycle({
-	billingCycle: options.billingCycle as number,
-	year: options.year as number,
-	month: options.month as number
-});
+const billingCycleOptions = {
+	billingCycle: Number.parseInt(options.billingCycle as string),
+	year: Number.parseInt(options.year as string),
+	month: Number.parseInt(options.month as string)
+}
 
-console.log(`Getting usage for ${options.enterprise} for ${options.year}-${options.month}`);
+console.log(`Recieved Billing-Cycle-Options: ${JSON.stringify(billingCycleOptions, null, 2)}`);
+
+const billingCycle = parseInputCycle(billingCycleOptions);
+
+console.log(`Getting usage for ${billingCycle.getDateRangeAsString()}`);
 
 const octokit = new Octokit({ auth: options.githubToken });
 const enterpriseBillingAPI = createEnterpriseBillingAPI(octokit);
