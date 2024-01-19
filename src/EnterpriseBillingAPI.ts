@@ -18,14 +18,16 @@ function createEnterpriseBillingAPI(octokit: Octokit) {
 			let usageItems: UsageItem[] = [];
 
 			for(const dateRange of dateRanges) {
-				const response = await octokit.request('GET /enterprises/{enterprise}/settings/billing/usage?year{year}&month={month}', {
+
+				console.log(`Getting usage for ${enterprise} for year: ${dateRange.year} and month: ${dateRange.month}`);
+				const response = await octokit.request('GET /enterprises/{enterprise}/settings/billing/usage?year={year}&month={month}', {
 					enterprise: enterprise,
 					year: dateRange.year,
 					month: dateRange.month,
 					headers: {
 						'X-GitHub-Api-Version': '2022-11-28'
 					}
-				}) as EnterpriseBillingResponse;
+				});
 				usageItems = [
 					...usageItems,
 					...response.data.usageItems
