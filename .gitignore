@@ -132,3 +132,5 @@ dist
 cache
 output
 reports
+
+.DS_Store
