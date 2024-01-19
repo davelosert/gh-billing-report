@@ -1,7 +1,7 @@
 import { APIDate } from './EnterpriseBillingAPI';
 import { UsageItem } from './UsageItem';
 import { UTCDate } from "@date-fns/utc";
-import { parseISO, isExists, Interval, isSameMonth, endOfDay, startOfMonth, endOfMonth, addMonths, subDays } from 'date-fns'
+import { parseISO, isExists, Interval, isSameMonth, endOfDay, startOfMonth, endOfMonth, addMonths, subDays, isWithinInterval, format } from 'date-fns'
 
 type InputCycle = {
 	year: number;
@@ -13,6 +13,8 @@ type ApiDateRange = {
 	start: APIDate;
 	end?: APIDate;
 }
+
+const OUTPUT_FORMAT='yyyy-MM-dd';
 
 function parseInputCycle({ year, month, billingCycle }: InputCycle) {
 	const dateRange = getRequiredDateRange({ year, month, billingCycle });
@@ -31,12 +33,14 @@ function parseInputCycle({ year, month, billingCycle }: InputCycle) {
 		getDateRange() {
 			return dateRange;
 		},
+		getDateRangeAsString() {
+			const start = format(dateRange.start, OUTPUT_FORMAT);
+			const end = format(dateRange.end as Date, OUTPUT_FORMAT);
+			return `${start}_to_${end}`;
+		},
 		isInDateRange(usageItem: UsageItem) {
 			const usageItemDate = parseISO(usageItem.date);
-
-			if(billingCycle === 1) {
-				return usageItemDate.getFullYear() === year && usageItemDate.getMonth() === month - 1;
-			}
+			return isWithinInterval(usageItemDate, dateRange);
 		}
 	}
 }

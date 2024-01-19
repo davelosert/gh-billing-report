@@ -122,11 +122,34 @@ describe('InputCycle', () => {
 			expect(result).toBe(false);
 		});
 		
-		it.skip('if billing cycle is > 1 and usageItem is in same month, return true', () => {
-			const usageItem = createMockUsageItem({ date: '2022-05-01T00:00:00Z' });
+		it('if billing cycle is > 1 and usageItem is within the same month, return true', () => {
+			const usageItem = createMockUsageItem({ date: '2022-05-15T00:00:00Z' });
 			const input = parseInputCycle({ year: 2022, month: 5, billingCycle: 2 });
 			const result = input.isInDateRange(usageItem);
 			expect(result).toBe(true);
 		});
+		
+		it('usage item is exactly at start of billing cycle, return true', () => {
+			const usageItem = createMockUsageItem({ date: '2022-05-02T00:00:00Z' });
+			const input = parseInputCycle({ year: 2022, month: 5, billingCycle: 2 });
+			const result = input.isInDateRange(usageItem);
+			expect(result).toBe(true);
+		});
+
+		it('usage item is exactly at end of billing cycle, return true', () => {
+			const usageItem = createMockUsageItem({ date: '2022-06-01T23:59:59Z' });
+			const input = parseInputCycle({ year: 2022, month: 5, billingCycle: 2 });
+			const result = input.isInDateRange(usageItem);
+			expect(result).toBe(true);
+		});
+	});
+	
+	describe('getDateRangeAsString()', () => {
+		it('returns a string of the format "YYYY-MM-DD_to_YYYY-MM-DD"', () => {
+			const input = parseInputCycle({ year: 2022, month: 5, billingCycle: 1 });
+			
+			expect(input.getDateRangeAsString()).toEqual('2022-05-01_to_2022-05-31');
+		});
+	
 	});
 });

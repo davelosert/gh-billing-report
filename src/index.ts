@@ -28,7 +28,7 @@ if(!options.githubToken) {
 	throw new Error('Github token is required');
 }
 
-const reportDateRange = parseInputCycle({
+const billingCycle = parseInputCycle({
 	billingCycle: options.billingCycle as number,
 	year: options.year as number,
 	month: options.month as number
@@ -38,14 +38,16 @@ console.log(`Getting usage for ${options.enterprise} for ${options.year}-${optio
 
 const octokit = new Octokit({ auth: options.githubToken });
 const enterpriseBillingAPI = createEnterpriseBillingAPI(octokit);
-const usageItems = await enterpriseBillingAPI.getUsageItemsForDates(
+const allUsageItems = await enterpriseBillingAPI.getUsageItemsForDates(
 	options.enterprise, 
-	reportDateRange.getRequiredAPIDateRange()
+	billingCycle.getRequiredAPIDateRange()
 );
+console.log(`Got ${allUsageItems.length} usage items`);
 
-console.log(`Got ${usageItems.length} usage items`);
+const usageItemsInDateRange = allUsageItems.filter(billingCycle.isInDateRange);
+console.log(`Got ${usageItemsInDateRange.length} items in billing cycle.`);
 
 const excelFilePath = path.join(process.cwd(), 'output');
 await fs.mkdir(excelFilePath, { recursive: true });
-const excelFileName = path.join(excelFilePath, `usage-${options.enterprise}-${options.year}-${options.month}.xlsx`)
-await generateExcel(excelFileName, usageItems)
+const excelFileName = path.join(excelFilePath, `GitHub_Usage_${billingCycle.getDateRangeAsString()}.xlsx`)
+await generateExcel(excelFileName, usageItemsInDateRange);
