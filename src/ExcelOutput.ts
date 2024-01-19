@@ -10,8 +10,9 @@ const generateExcel = async (outputFile: string, usageItems: UsageItem[]) => {
 	
 	orgWorksheet.columns = [	
 			{ header: 'Organization', key: 'organization', width: 30 },
-			{ header: 'Net Amount (with discounts applied)', key: 'netAmount', width: 30 },
-			{ header: 'Gross Amount (without discounts)', key: 'grossAmount', width: 30 },
+			{ header: 'Gross Amount', key: 'grossAmount', width: 20 },
+			{ header: 'Discount Amount', key: 'discountAmount', width: 20},
+			{ header: 'Net Amount (actually billed)', key: 'netAmount', width: 30 },
 	]
 	
 	orgWorksheet.getRow(1).font = { bold: true, underline: true };
