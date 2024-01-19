@@ -6,13 +6,14 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "build": "tsc",
+    "build": "rm -rf dist && node esbuild.cjs",
     "start": "node --loader ts-node/esm src/index.ts"
   },
   "author": "David Losert <david.losert@gmx.de>",
   "license": "MIT",
   "devDependencies": {
     "@commander-js/extra-typings": "11.1.0",
+    "pkg": "5.8.1",
     "ts-node": "10.9.2",
     "typescript": "5.3.3",
     "vitest": "1.2.1"
