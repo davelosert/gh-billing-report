@@ -150,6 +150,12 @@ describe('InputCycle', () => {
 			
 			expect(input.getDateRangeAsString()).toEqual('2022-05-01_to_2022-05-31');
 		});
+		
+		it('returns a range spanning two months if the billing cycle is > 1', () => {
+			const input = parseInputCycle({ year: 2022, month: 5, billingCycle: 2 });
+			
+			expect(input.getDateRangeAsString()).toEqual('2022-05-02_to_2022-06-01');
+		});
 	
 	});
 });
