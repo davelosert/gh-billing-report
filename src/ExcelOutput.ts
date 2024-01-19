@@ -9,7 +9,7 @@ const generateExcel = async (outputFile: string, usageItems: UsageItem[]) => {
 	const organizationReport = createOrganizationReport(usageItems);
 	
 	orgWorksheet.columns = [	
-			{ header: 'Organization', key: 'organizatio', width: 30 },
+			{ header: 'Organization', key: 'organization', width: 30 },
 			{ header: 'Net Amount (with discounts applied)', key: 'netAmount', width: 30 },
 			{ header: 'Gross Amount (without discounts)', key: 'grossAmount', width: 30 },
 	]
