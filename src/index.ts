@@ -20,6 +20,9 @@ const program = new Command()
 	.addOption(
 		new Option('--billing-cycle <billing-cycle>', 'First day of your billing cycle, e.g. 15').default(1)
 	)
+	.addOption(
+		new Option('--report-path <report-path>', 'Path where the Excel-File will be generated (path will be generated recursively if it does not exist)').default('./reports')
+	)
 
 program.parse();
 const options = program.opts();
@@ -27,8 +30,6 @@ const options = program.opts();
 
 if(!options.githubToken) {
 	throw new Error('Github token is required');
-	
-	
 }
 
 const billingCycleOptions = {
@@ -54,7 +55,6 @@ console.log(`Got ${allUsageItems.length} usage items`);
 const usageItemsInDateRange = allUsageItems.filter(billingCycle.isInDateRange);
 console.log(`Got ${usageItemsInDateRange.length} items in billing cycle.`);
 
-const excelFilePath = path.join(process.cwd(), 'output');
-await fs.mkdir(excelFilePath, { recursive: true });
-const excelFileName = path.join(excelFilePath, `GitHub_Usage_${billingCycle.getDateRangeAsString()}.xlsx`)
+await fs.mkdir(options.reportPath, { recursive: true });
+const excelFileName = path.join(options.reportPath, `GitHub_Usage_${billingCycle.getDateRangeAsString()}.xlsx`)
 await generateExcel(excelFileName, usageItemsInDateRange);
