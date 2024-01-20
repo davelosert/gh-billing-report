@@ -134,3 +134,6 @@ output
 reports
 
 .DS_Store
+
+/gh-billing-report
+/gh-billing-report.exe
