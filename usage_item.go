@@ -13,3 +13,13 @@ type UsageItem struct {
 	OrganizationName string  `json:"organizationName"`
 	RepositoryName   string  `json:"repositoryName"`
 }
+
+func FilterUsageItems(items []UsageItem, condition func(UsageItem) bool) []UsageItem {
+	var result []UsageItem
+	for _, item := range items {
+		if condition(item) {
+			result = append(result, item)
+		}
+	}
+	return result
+}
