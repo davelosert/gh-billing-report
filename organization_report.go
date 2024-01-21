@@ -19,7 +19,7 @@ type OrganizationReport struct {
 	UsageItems []UsageItem
 }
 
-func CreateOrganizationReport(usageItems []UsageItem) OrganizationReport {
+func NewOrganizationReport(usageItems []UsageItem) OrganizationReport {
 	overallUsage := Usage{}
 
 	sumByOrgs := make(map[string]Usage)
@@ -48,5 +48,6 @@ func CreateOrganizationReport(usageItems []UsageItem) OrganizationReport {
 	return OrganizationReport{
 		UsageByOrg: usageByOrg,
 		SumUsage:   overallUsage,
+		UsageItems: usageItems,
 	}
 }
