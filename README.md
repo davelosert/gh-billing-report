@@ -97,7 +97,7 @@ Currently, the output is an Excel file containing the two sheets:
   - **Discount**: The discount applied to the usage
   - **Net Amount**: The net amount of the usage - this is what you will be billed
 - **Detail Usage**: Contains all usage items of the billing cycle you specified so you can drill down into the data
-    ![Screenshot of the Detail Usage Sheet](./docs/images/detail-usage.png)
+    ![Screenshot of the Detail Usage Sheet](./docs/images/usage-details.png)
 
 ## License
 
