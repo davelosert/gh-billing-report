@@ -23,8 +23,6 @@ func (self *Octokit) getUsageItemsForDates(enterprise string, dateRanges []APIDa
 	var usageItems []UsageItem
 
 	for _, dateRange := range dateRanges {
-		fmt.Printf("Getting usage for %s for year: %d and month: %d\n", enterprise, dateRange.Year, dateRange.Month)
-
 		url := fmt.Sprintf("enterprises/%s/settings/billing/usage?year=%d&month=%d", enterprise, dateRange.Year, dateRange.Month)
 
 		parsedResponse := EnterpriseBillingResponse{}

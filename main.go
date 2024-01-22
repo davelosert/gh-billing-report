@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -50,7 +51,7 @@ var rootCmd = &cobra.Command{
 		}
 		billingCycle := NewBillingCycle(inputCycle)
 
-		fmt.Printf("Date Range: %s\n", billingCycle.GetDateRangeAsString())
+		log.Printf("Date Range: %s\n", billingCycle.GetDateRangeAsString())
 
 		opts := api.ClientOptions{
 			AuthToken: githubToken, // Replace with valid auth token.
@@ -63,13 +64,12 @@ var rootCmd = &cobra.Command{
 		allUsageItems, err := octokit.getUsageItemsForDates(enterprise, billingCycle.GetRequiredAPIDateRange())
 
 		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			return
+			log.Fatal("Error while getting usageItems from API. Make sure you have provided a GITHUB_TOKEN with the scopes 'manage_billing:enterprise' and 'read:enterprise'.\nOriginal error:\n", err)
 		}
 
 		// Filter usage Items using the billing_cycle IsInDateRange method
 		relevantUsageItems := FilterUsageItems(allUsageItems, billingCycle.IsInDateRange)
-		fmt.Printf("Found %d usage items of which %d are in given Billing Cycle\n", len(allUsageItems), len(relevantUsageItems))
+		log.Printf("Found %d usageItems of which %d are in given Billing-Cycle\n", len(allUsageItems), len(relevantUsageItems))
 
 		orgReport := NewOrganizationReport(relevantUsageItems)
 
@@ -80,33 +80,13 @@ var rootCmd = &cobra.Command{
 
 		err = GenerateExcel(excelFileName, orgReport)
 		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			return
+			log.Fatalf("Error while generating Excel-File: \n%s\n", err)
 		}
 
-		fmt.Printf("Report generated at %s\n", reportPath)
+		log.Printf("Report generated at %s\n", reportPath)
 	},
 }
 
 func main() {
 	cobra.CheckErr(rootCmd.Execute())
 }
-
-// func main() {
-// 	fmt.Println("hi world, this is the gh-billing-report extension!")
-// 	client, err := api.DefaultRESTClient()
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	response := struct{ Login string }{}
-// 	err = client.Get("user", &response)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	fmt.Printf("running as %s\n", response.Login)
-// }
-
-// For more examples of using go-gh, see:
-// https://github.com/cli/go-gh/blob/trunk/example_gh_test.go
