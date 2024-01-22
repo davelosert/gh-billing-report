@@ -1,6 +1,8 @@
-# GH Billing VNext Report
+# GH Billing Report
 
-A command line tool to use GitHub's Billing VNext APIs to export an Excel-Report with the usage for a given Billing-Cycle, grouped and aggregated by organization.
+A command line tool to use GitHub's new Billing APIs to export an Excel-Report with the usage for a given Billing-Cycle, grouped and aggregated by organization.
+
+![Screenshot of an Excel File containing a Billing Report by Organization](./docs/images/org-report.png)
 
 ## Getting Started
 
@@ -9,13 +11,13 @@ A command line tool to use GitHub's Billing VNext APIs to export an Excel-Report
 The easiest way to use this tool is to install the [GH Extension](https://cli.github.com/) and run the following command:
 
 ```bash
-gh extension install davelosert/billing-vnext-report
+gh extension install davelosert/billing-report
 ```
 
 Afterwards, you can run the following command to generate a report:
 
 ```bash
-gh billing-vnext-report --enterprise my-enterprise --github-token $GITHUB_TOKEN
+gh billing-report --enterprise my-enterprise --github-token $GITHUB_TOKEN
 ```
 
 ### Using the repo directly
@@ -34,7 +36,7 @@ go run . --enterprise my-enterprise --github-token $GITHUB_TOKEN
 All options can be set as flags via the command line:
 
 ```bash
-gh billing-vnext-report --github-token <github-token> \
+gh billing-report --github-token <github-token> \
   --enterprise <enterprise-slug> \
   --year <year> \
   --month <month> \
@@ -57,13 +59,18 @@ The `GITHUB_TOKEN` will be automatically read from the Environment-Variable, but
 
 By default, the generated report covers an entire calendar month (e.g., `1st of January` to `31st of January`).
 
-You can customize this range using the `--billing-cycle` option, which sets the start day of your billing cycle. The report will then cover the period from the specified billing cycle day of the input month to the day before the same billing cycle day of the following month. For instance:
+You can customize this range using the `--billing-cycle` option, which sets the start day of your billing cycle. The report will then cover the period
 
-If you set `--year 2024 --month 1 --billing-cycle 15`, the report will cover the period from `15th of January 2024` to `14th of February 2024`.
+- from the specified **billing cycle day of the input month**
+- to the day **before the same billing cycle day of the following month**
 
-For billing cycles starting on a day that doesn't exist in the input month (essentially the 29th and 30th for February, or the 31st for 30-day months), the report will cover the period from the first day of the following month to the day before the billing cycle day of the subsequent month. For example:
+If the given billing cycle day does not exist in the given month, the first day of the next month will be used. See the following examples:
 
-If you set `--year 2024 --month 2 --billing-cycle 30`, the report will cover the period from `1st of March 2024` to `29th of March 2024`.
+| Input | Report Period |
+| ----- | ------------- |
+| `--year 2024 --month 1 --billing-cycle 1` | `1st of January 2024` to `31st of January 2024` |
+| `--year 2024 --month 1 --billing-cycle 15` | `15th of January 2024` to `14th of February 2024` |
+| `--year 2024 --month 2 --billing-cycle 30` | `1st of March 2024` to `29th of March 2024` |
 
 > [!IMPORTANT]
 > Please note that all cutoff dates are in UTC. Therefore, a report with `--year 2024 --month 1 --billing-cycle 15` will include all usage data from `15th of January 2024 00:00:00 UTC` to `14th of February 2024 23:59:59 UTC`.
@@ -74,6 +81,17 @@ You need to create a [classical GitHub Token](https://docs.github.com/en/authent
 
 - `manage_billing:enterprise`
 - `read:enterprise`
+
+## Output
+
+Currently, the output is an Excel file containing the two sheets:
+
+- **Usage by Organization**: Contains the aggregated usage by organization where:
+  - **Gross Amount**: The gross amount of the usage
+  - **Discount**: The discount applied to the usage
+  - **Net Amount**: The net amount of the usage - this is what you will be billed
+- **Detail Usage**: Contains all usage items of the billing cycle you specified so you can drill down into the data
+    ![Screenshot of the Detail Usage Sheet](./docs/images/detail-usage.png)
 
 ## License
 
