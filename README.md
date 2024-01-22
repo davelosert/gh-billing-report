@@ -8,17 +8,23 @@ A command line tool to use GitHub's new Billing APIs to export an Excel-Report w
 
 ### Using the GH Extension
 
-The easiest way to use this tool is to install the [GH Extension](https://cli.github.com/) and run the following command:
+The easiest way to use this tool is to install it as a [GitHub CLI](https://cli.github.com/) Extension.
 
-```bash
-gh extension install davelosert/billing-report
-```
+1. Install the extension:
 
-Afterwards, you can run the following command to generate a report:
+    ```bash
+    gh extension install davelosert/billing-report
+    ```
 
-```bash
-gh billing-report --enterprise my-enterprise --github-token $GITHUB_TOKEN
-```
+2. Create a [classical GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with the scopes `manage_billing:enterprise` and `read:enterprise`
+
+3. Generate the report:
+
+    ```bash
+    gh billing-report --enterprise my-enterprise --github-token $GITHUB_TOKEN
+    ```
+
+    This will generate a report for the current running calendar month and save it to the `./reports` folder of the current working directory. See the [Options Section below](#options) for more information on how to customize the report.
 
 ### Using the repo directly
 
@@ -66,18 +72,18 @@ You can customize this range using the `--billing-cycle` option, which sets the 
 
 If the given billing cycle day does not exist in the given month, the first day of the next month will be used. See the following examples:
 
-| Input | Report Period |
-| ----- | ------------- |
-| `--year 2024 --month 1 --billing-cycle 1` | `1st of January 2024` to `31st of January 2024` |
+| Input                                      | Report Period                                     |
+| ------------------------------------------ | ------------------------------------------------- |
+| `--year 2024 --month 1 --billing-cycle 1`  | `1st of January 2024` to `31st of January 2024`   |
 | `--year 2024 --month 1 --billing-cycle 15` | `15th of January 2024` to `14th of February 2024` |
-| `--year 2024 --month 2 --billing-cycle 30` | `1st of March 2024` to `29th of March 2024` |
+| `--year 2024 --month 2 --billing-cycle 30` | `1st of March 2024` to `29th of March 2024`       |
 
 > [!IMPORTANT]
 > Please note that all cutoff dates are in UTC. Therefore, a report with `--year 2024 --month 1 --billing-cycle 15` will include all usage data from `15th of January 2024 00:00:00 UTC` to `14th of February 2024 23:59:59 UTC`.
 
 ### Github Token Permissions
 
-You need to create a [classical GitHub Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with the following Scopes:
+You need to create a [classical GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with the following Scopes:
 
 - `manage_billing:enterprise`
 - `read:enterprise`
