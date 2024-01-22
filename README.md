@@ -27,14 +27,19 @@ go run . --enterprise my-enterprise --github-token $GITHUB_TOKEN
 ```
 
 > [!NOTE]
-> This requires you to have [Go](https://golang.org/) v >1.21.5 installed on your machine.
+> This requires you to have [Go](https://golang.org/) >1.21.5 installed on your machine.
 
 ## Options
 
 All options can be set as flags via the command line:
 
 ```bash
-gh billing-vnext-report --github-token <github-token> --enterprise <enterprise-slug> --year <year> --month <month> --billing-cycle <billing-cycle> --report-path <report-path>
+gh billing-vnext-report --github-token <github-token> \
+  --enterprise <enterprise-slug> \
+  --year <year> \
+  --month <month> \
+  --billing-cycle <billing-cycle> \
+  --report-path <report-path>
 ```
 
 The `GITHUB_TOKEN` will be automatically read from the Environment-Variable, but can be overwritten using the `--github-token` flag.
