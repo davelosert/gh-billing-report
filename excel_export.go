@@ -61,7 +61,16 @@ func generateOrganizationSheet(file *excelize.File, organizationReport Organizat
 	// Add rows with organizationReport.usageByOrg
 	for i, item := range organizationReport.UsageByOrg {
 		startCell, _ := excelize.JoinCellName("A", i+3)
-		file.SetSheetRow(orgSummarySheetName, startCell, &[]interface{}{item.Organization, item.GrossAmount, item.DiscountAmount * -1, item.NetAmount})
+		organizationName := item.Organization
+		if item.Organization == "" {
+			organizationName = "[DELETED ORGANIZATION(S)]"
+		}
+		file.SetSheetRow(orgSummarySheetName, startCell, &[]interface{}{
+			organizationName,
+			item.GrossAmount,
+			item.DiscountAmount * -1,
+			item.NetAmount,
+		})
 	}
 
 	file.AddTable(orgSummarySheetName, &excelize.Table{
