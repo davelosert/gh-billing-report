@@ -1,6 +1,6 @@
 # GH Billing Report
 
-A command line tool to use GitHub's new Billing APIs to export an Excel-Report with the usage for a given Billing-Cycle, grouped and aggregated by organization.
+A command line tool to use GitHub's new [Enhanced Enterprise Billing Usage Report APIs](https://docs.github.com/en/enterprise-cloud@latest/rest/enterprise-admin/billing?apiVersion=2022-11-28#get-billing-usage-report-for-an-enterprise) to export an Excel-Report with the usage for a given Billing-Cycle, grouped and aggregated by organization.
 
 ![Screenshot of an Excel File containing a Billing Report by Organization](./docs/images/org-report.png)
 
