@@ -4,8 +4,9 @@ go 1.21.5
 
 require (
 	github.com/cli/go-gh/v2 v2.4.0
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.18.2
+	github.com/xuri/excelize/v2 v2.8.0
 )
 
 require (
@@ -36,7 +37,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/thlib/go-timezone-local v0.0.0-20210907160436-ef149e42d28e // indirect
 	github.com/xuri/efp v0.0.0-20230802181842-ad255f2331ca // indirect
-	github.com/xuri/excelize/v2 v2.8.0 // indirect
 	github.com/xuri/nfp v0.0.0-20230819163627-dc951e3ffe1a // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
