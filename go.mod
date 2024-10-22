@@ -3,7 +3,7 @@ module github.com/davelosert/gh-billing-report
 go 1.21.5
 
 require (
-	github.com/cli/go-gh/v2 v2.9.0
+	github.com/cli/go-gh/v2 v2.11.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/xuri/excelize/v2 v2.8.1
