@@ -13,7 +13,7 @@ The easiest way to use this tool is to install it as a [GitHub CLI](https://cli.
 1. Install the extension:
 
     ```bash
-    gh extension install davelosert/billing-report
+    gh extension install davelosert/gh-billing-report
     ```
 
 2. Create a [classical GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with the scopes `manage_billing:enterprise` and `read:enterprise`
